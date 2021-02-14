@@ -7,9 +7,12 @@ import {
   success,
   failure,
   assertExhaustive,
+  SECOND,
+  isLoading,
 } from "./utils";
 
 const url = "https://blockchain.info/ticker?cors=true";
+const refreshInterval = 30 * SECOND;
 
 type Rate = {
   "15m": number;
@@ -27,6 +30,7 @@ export class Ticker extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     this.refreshData();
+    setInterval(this.refreshData, refreshInterval);
   }
 
   private refreshData = async () => {
@@ -45,31 +49,44 @@ export class Ticker extends LitElement {
     }
   };
 
-  render() {
+  private renderTicker = (data: TickerData) =>
+    Object.entries(data).map(
+      ([code, rate]) =>
+        html`<xbt-rate
+          currencyCode=${code}
+          symbol=${rate.symbol}
+          fifteen=${rate["15m"]}
+          last=${rate.last}
+          buy=${rate.buy}
+          sell=${rate.sell}
+        ></xbt-rate>`
+    );
+
+  private renderTickerData = () => {
+    // Split this out of main render because switch isn't an expression so can't be used in template strings
     switch (this.tickerData.type) {
       case "NotAsked":
         return html``;
       case "Loading":
-        return html`Loading...`;
+        if (this.tickerData.oldData !== undefined) {
+          return this.renderTicker(this.tickerData.oldData);
+        }
+        return html``;
       case "Failure":
         return html`Failed to load`;
       case "Success":
-        return html`<main>
-          ${Object.entries(this.tickerData.data).map(
-            ([code, rate]) =>
-              html`<xbt-rate
-                currencyCode=${code}
-                symbol=${rate.symbol}
-                fifteen=${rate["15m"]}
-                last=${rate.last}
-                buy=${rate.buy}
-                sell=${rate.sell}
-              ></xbt-rate>`
-          )}
-        </main>`;
+        return this.renderTicker(this.tickerData.data);
       default:
         assertExhaustive(this.tickerData);
         return html``;
     }
+  };
+
+  render() {
+    const loadingData = isLoading(this.tickerData);
+    return html`<button @click="${this.refreshData}" .disabled=${loadingData}>
+        ${loadingData ? "Loading..." : "Update"}
+      </button>
+      <main>${this.renderTickerData()}</main>`;
   }
 }

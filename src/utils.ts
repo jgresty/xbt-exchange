@@ -28,6 +28,9 @@ export function success<Data>(data: Data): Success<Data> {
 export function isSuccess(data: RemoteData<unknown>): data is Success<unknown> {
   return data.type === "Success";
 }
+export function isLoading(data: RemoteData<unknown>): data is Loading<unknown> {
+  return data.type === "Loading";
+}
 
 /**
  * Force the typescript compiler to throw an error if this function is hit
@@ -35,3 +38,6 @@ export function isSuccess(data: RemoteData<unknown>): data is Success<unknown> {
 export function assertExhaustive(x: never): never {
   throw new Error(`Case not covered in exhaustive type: ${x}`);
 }
+
+// One second in miliseconds
+export const SECOND = 1000;

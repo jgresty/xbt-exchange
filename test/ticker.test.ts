@@ -9,10 +9,6 @@ describe("Ticker", () => {
     element = await fixture(html`<xbt-ticker></xbt-ticker>`);
   });
 
-  it("renders hello world", () => {
-    expect(element.shadowRoot!.textContent).to.equal("Hello world!");
-  });
-
   it("passes the a11y audit", async () => {
     await expect(element).shadowDom.to.be.accessible();
   });

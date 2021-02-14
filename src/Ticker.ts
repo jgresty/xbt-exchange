@@ -1,4 +1,4 @@
-import { LitElement, html, property } from "lit-element";
+import { LitElement, html, property, css } from "lit-element";
 import {
   RemoteData,
   notAsked,
@@ -26,6 +26,26 @@ type TickerData = { [currencyCode: string]: Rate };
 export class Ticker extends LitElement {
   @property({ attribute: false })
   tickerData: RemoteData<TickerData> = notAsked;
+
+  static styles = css`
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f1f1f1;
+    }
+    main {
+      width: 80%;
+      max-width: 100rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+    }
+    * {
+      color: #353535;
+      font-family: sans;
+    }
+  `;
 
   connectedCallback() {
     super.connectedCallback();
@@ -84,7 +104,8 @@ export class Ticker extends LitElement {
 
   render() {
     const loadingData = isLoading(this.tickerData);
-    return html`<button @click="${this.refreshData}" .disabled=${loadingData}>
+    return html` <h2>XBT Ticker</h2>
+      <button @click="${this.refreshData}" .disabled=${loadingData}>
         ${loadingData ? "Loading..." : "Update"}
       </button>
       <main>${this.renderTickerData()}</main>`;

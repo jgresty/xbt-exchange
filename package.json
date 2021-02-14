@@ -1,0 +1,46 @@
+{
+  "name": "xbt-exchange",
+  "main": "index.js",
+  "scripts": {
+    "test": "tsc && web-test-runner",
+    "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
+    "watch": "tsc --watch --preserveWatchOutput",
+    "serve": "tsc && web-dev-server"
+  },
+  "author": "jgresty",
+  "dependencies": {
+    "lit-element": "^2.4.0"
+  },
+  "devDependencies": {
+    "@open-wc/eslint-config": "^4.2.0",
+    "@open-wc/testing": "^2.5.32",
+    "@typescript-eslint/eslint-plugin": "^4.15.0",
+    "@typescript-eslint/parser": "^4.15.0",
+    "@web/test-runner": "^0.12.15",
+    "eslint": "^7.20.0",
+    "eslint-config-prettier": "^7.2.0",
+    "prettier": "^2.2.1",
+    "tslib": "^2.1.0",
+    "typescript": "^4.1.5"
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+      "@open-wc/eslint-config",
+      "eslint-config-prettier",
+      "plugin:import/typescript"
+    ],
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "import/extensions": [
+        "error",
+        "ignorePackages",
+        {
+          "ts": "never"
+        }
+      ]
+    }
+  }
+}

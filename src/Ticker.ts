@@ -102,12 +102,39 @@ export class Ticker extends LitElement {
     }
   };
 
+  private renderConvertForm = () => {
+    const noData = html`No currency data loaded`;
+    switch (this.tickerData.type) {
+      case "NotAsked":
+        return noData;
+      case "Loading":
+        if (this.tickerData.oldData !== undefined) {
+          return html`<xbt-convert
+            currencyCodes=${JSON.stringify(
+              Object.keys(this.tickerData.oldData)
+            )}
+          ></xbt-convert>`;
+        }
+        return noData;
+      case "Failure":
+        return noData;
+      case "Success":
+        return html`<xbt-convert
+          currencyCodes=${JSON.stringify(Object.keys(this.tickerData.data))}
+        ></xbt-convert>`;
+      default:
+        assertExhaustive(this.tickerData);
+        return html``;
+    }
+  };
+
   render() {
     const loadingData = isLoading(this.tickerData);
     return html` <h2>XBT Ticker</h2>
       <button @click="${this.refreshData}" .disabled=${loadingData}>
         ${loadingData ? "Loading..." : "Update"}
       </button>
+      ${this.renderConvertForm()}
       <main>${this.renderTickerData()}</main>`;
   }
 }

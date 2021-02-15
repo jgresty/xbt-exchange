@@ -30,6 +30,21 @@ export class Convert extends LitElement {
     )).value;
     const amount = (<HTMLInputElement>this.shadowRoot?.getElementById("amount"))
       .value;
+
+    if (!this.currencyCodes.includes(currency)) {
+      this.result = failure("unknown currency");
+      return;
+    }
+    const parsedAmount = Number.parseFloat(amount);
+    if (Number.isNaN(parsedAmount)) {
+      this.result = failure("amount is not numeric");
+      return;
+    }
+    if (parsedAmount < 0 || parsedAmount > 1_000_000) {
+      this.result = failure("amount must be between 0 and 1,000,000");
+      return;
+    }
+
     const response = await fetch(
       `${url}?cors=true&currency=${currency}&value=${amount}`
     );
